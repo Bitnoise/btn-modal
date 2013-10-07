@@ -50,26 +50,20 @@
 
     Plugin.prototype.attachFormSubmit = function () {
         self = this;
-        this.modal.find('.modal-body').find('form').submit(function() {
+        this.modal.find('.modal-body').on('submit', 'form', function() {
             var form = $(this);
             var querystring = form.serialize();
-            console.log(querystring);
             $.post(form.attr('action'), querystring, function(data) {
                 if (data.verdict == 'success') {
-                    // console.log('OK');
                     //refresh list or reload window
-                    // self.modal.modal('hide');
                     if (self.redirect) {
                         window.location.reload();
                     } else {
                         form.parent().empty().append(data.content);
                     }
                 } else {
-                    // console.log('FAIL');
                     //error - replace the form with populated errors
                     form.parent().empty().append(data.content);
-                    //re-assign submit event
-                    self.attachFormSubmit();
                 }
             }, 'json');
 
@@ -100,13 +94,10 @@
 
                 self.attachFormSubmit();
 
-                //
                 self.modal.removeData('modal').modal({
                     show:true
                 })
             }, 'json');
-            // $('#modalForm').find('.modal-body').text(href);
-            // $('#dataConfirmOK').attr('href', href);
 
             return false;
         });
