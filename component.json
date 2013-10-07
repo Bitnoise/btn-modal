@@ -1,0 +1,7 @@
+{
+  "name": "btn-modal",
+  "version": "0.1.0",
+  "dependencies": {
+    "sass-bootstrap": "~2.3.2"
+  }
+}
