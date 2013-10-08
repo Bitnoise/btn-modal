@@ -15,11 +15,12 @@
 
         this.options = $.extend( {}, defaults, options) ;
 
-        this._defaults    = defaults;
-        this._name        = pluginName;
+        this._defaults  = defaults;
+        this._name      = pluginName;
 
-        this.modal        = null;
-        this.redirect     = true;
+        this.modal           = null;
+        this.redirectSuccess = null;
+        this.redirectError   = null;
 
         this.init();              //initialize
     }
@@ -37,7 +38,7 @@
     };
 
     Plugin.prototype.createModal = function () {
-        var element = $('<div id="modalForm" class="modal hide" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Edit</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button></div></div>');
+        var element = $('<div id="modalForm" class="modal hide" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button></div></div>');
 
         $('body').append(element);
 
@@ -54,17 +55,20 @@
             var form = $(this);
             var querystring = form.serialize();
             $.post(form.attr('action'), querystring, function(data) {
+
                 if (data.verdict == 'success') {
                     //refresh list or reload window
-                    if (self.redirect) {
-                        window.location.reload();
-                    } else {
-                        form.parent().empty().append(data.content);
-                    }
+                    if (self.redirectSuccess) {
+                        window.location = self.redirectSuccess;
+                    };
                 } else {
                     //error - replace the form with populated errors
-                    form.parent().empty().append(data.content);
+                    if (self.redirectError) {
+                        window.location = self.redirectError;
+                    };
                 }
+
+                form.parent().empty().append(data.content);
             }, 'json');
 
             return false;
@@ -79,15 +83,23 @@
             var href  = $(this).attr('href');
             var title = $(this).attr('data-modal-title');
 
-            if ($(this).attr('data-modal-redirect')) {
-                self.redirect = ($(this).attr('data-modal-redirect') == 'false' ? false : true);
+            if ($(this).data('modal-redirect-success')) {
+                self.redirectSuccess = $(this).data('modal-redirect-success');
+            };
+
+            if ($(this).data('modal-redirect-error')) {
+                self.redirectError = $(this).data('modal-redirect-error');
             };
             //call ajax
             $.get(href, function(data) {
 
                 //add modal title if any
                 if (title) {
-                    self.modal.find('#dataConfirmLabel').html(title);
+                    if (self.modal.find('#dataConfirmLabel').length) {
+                        self.modal.find('#dataConfirmLabel').html(title);
+                    } else {
+                        self.modal.find('.modal-header').append('<h3 id="dataConfirmLabel">' + title + '</h3>');
+                    }
                 };
 
                 self.modal.find('.modal-body').html(data.content);
