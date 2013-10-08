@@ -2,7 +2,7 @@
   "name": "btn-modal",
   "version": "0.0.0",
   "dependencies": {
-    "sass-bootstrap": "~2.3.2"
+    // "sass-bootstrap": "~2.3.2"
   },
   "gitHead": "e70dc38f2c36018bc5aaa51c3ee35580c325b1a7",
   "_id": "btn-modal@0.1.0",
