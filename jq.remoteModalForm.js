@@ -106,8 +106,12 @@
 
                 self.attachFormSubmit();
 
+                //reattach
+                self.modal.find('a[data-modal]').remoteModalForm();
+
                 self.modal.removeData('modal').modal({
-                    show:true
+                    show:true,
+                    backdrop: ($('.modal-backdrop').length) ? false : true
                 })
             }, 'json');
 
