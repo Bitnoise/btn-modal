@@ -1,4 +1,4 @@
-/*!
+/*
  * Confirmation modal attachment, require Twitter Bootstrap modal plugin
  */
 ;(function ( $, window, document, undefined ) {
