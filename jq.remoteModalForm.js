@@ -74,6 +74,9 @@
                 }
 
                 form.parent().empty().append(data.content);
+
+                //reattach links
+                self.modal.find('a[data-modal]').remoteModalForm();
             }, 'json');
 
             return false;
