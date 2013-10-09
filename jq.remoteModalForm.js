@@ -7,6 +7,7 @@
     var pluginName = 'remoteModalForm',
         defaults = {
             //something default?
+            showCancelBtn: false
         };
 
     // The actual plugin constructor
@@ -38,7 +39,11 @@
     };
 
     Plugin.prototype.createModal = function () {
-        var element = $('<div id="modalForm" class="modal hide" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button></div></div>');
+        var element = $('<div id="modalForm" class="modal hide" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div><div class="modal-body"></div><div class="modal-footer"></div></div>');
+
+        if (this.options.showCancelBtn) {
+            element.find('.modal-footer').append('<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>');
+        };
 
         $('body').append(element);
 
