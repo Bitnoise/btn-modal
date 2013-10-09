@@ -98,6 +98,11 @@
             if ($(this).data('modal-redirect-error')) {
                 self.redirectError = $(this).data('modal-redirect-error');
             };
+
+            if ($(this).data('modal-class')) {
+                self.modal.addClass($(this).data('modal-class'));
+            };
+
             //call ajax
             $.get(href, function(data) {
 
