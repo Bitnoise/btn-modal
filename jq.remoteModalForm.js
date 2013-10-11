@@ -32,7 +32,8 @@
         // console.log($(this.element));
         if (!this.isModalExists()) {
             this.createModal();
-        };
+            this.attachFormSubmit();
+        }
 
         //assign confirmation modal
         this.attachModal();
@@ -46,6 +47,8 @@
         };
 
         $('body').append(element);
+
+        this.modal = $('#modalForm');
 
     };
 
@@ -86,7 +89,7 @@
     //assign change events
     Plugin.prototype.attachModal = function () {
         var self = this;
-        this.modal = $('#modalForm');
+
         $(this.element).click(function(ev) {
             var href  = $(this).attr('href');
             var title = $(this).attr('data-modal-title');
@@ -100,7 +103,7 @@
             };
 
             if ($(this).data('modal-class')) {
-                self.modal.addClass($(this).data('modal-class'));
+                self.modal.removeClass().addClass('modal ' + $(this).data('modal-class')); //modal
             };
 
             //call ajax
@@ -117,7 +120,7 @@
 
                 self.modal.find('.modal-body').html(data.content);
 
-                self.attachFormSubmit();
+                // self.attachFormSubmit();
 
                 //reattach
                 self.modal.find('a[data-modal]').remoteModalForm();
