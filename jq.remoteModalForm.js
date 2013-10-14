@@ -76,7 +76,7 @@
                     };
                 }
 
-                form.parent().empty().append(data.content);
+                self.modal.find('.modal-body').empty().append(data.content);
 
                 //reattach links
                 self.modal.find('a[data-modal]').remoteModalForm();
@@ -88,9 +88,8 @@
 
     //assign change events
     Plugin.prototype.attachModal = function () {
-        var self = this;
         this.modal = $('#modalForm');
-
+        var self = this;
         $(this.element).click(function(ev) {
             var href  = $(this).attr('href');
             var title = $(this).attr('data-modal-title');
@@ -119,7 +118,7 @@
                     }
                 };
 
-                self.modal.find('.modal-body').html(data.content);
+                self.modal.find('.modal-body').empty().html(data.content);
 
                 // self.attachFormSubmit();
 
