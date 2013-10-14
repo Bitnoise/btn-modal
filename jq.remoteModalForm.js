@@ -89,6 +89,7 @@
     //assign change events
     Plugin.prototype.attachModal = function () {
         var self = this;
+        this.modal = $('#modalForm');
 
         $(this.element).click(function(ev) {
             var href  = $(this).attr('href');
