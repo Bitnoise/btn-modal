@@ -63,16 +63,16 @@
             var form = $(this);
             var querystring = form.serialize();
             $.post(form.attr('action'), querystring, function(data) {
-
                 if (data.verdict == 'success') {
                     //refresh list or reload window
-                    if (self.redirectSuccess) {
-                        window.location = self.redirectSuccess;
+                    if ($(self.element).data('modal-redirect-success')) {
+                        debugger;
+                        window.location = $(self.element).data('modal-redirect-success');
                     };
                 } else {
                     //error - replace the form with populated errors
-                    if (self.redirectError) {
-                        window.location = self.redirectError;
+                    if ($(self.element).data('modal-redirect-error')) {
+                        window.location = $(self.element).data('modal-redirect-error');
                     };
                 }
 
@@ -94,14 +94,6 @@
             var href  = $(this).attr('href');
             var title = $(this).attr('data-modal-title');
 
-            if ($(this).data('modal-redirect-success')) {
-                self.redirectSuccess = $(this).data('modal-redirect-success');
-            };
-
-            if ($(this).data('modal-redirect-error')) {
-                self.redirectError = $(this).data('modal-redirect-error');
-            };
-
             if ($(this).data('modal-class')) {
                 self.modal.removeClass().addClass('modal ' + $(this).data('modal-class')); //modal
             };
@@ -118,9 +110,11 @@
                     }
                 };
 
-                self.modal.find('.modal-body').empty().html(data.content);
+                //update this.element
+                self.element = this;
 
-                // self.attachFormSubmit();
+                //setup content
+                self.modal.find('.modal-body').empty().html(data.content);
 
                 //reattach
                 self.modal.find('a[data-modal]').remoteModalForm();
