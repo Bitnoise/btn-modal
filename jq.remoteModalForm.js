@@ -66,7 +66,6 @@
                 if (data.verdict == 'success') {
                     //refresh list or reload window
                     if ($(self.element).data('modal-redirect-success')) {
-                        debugger;
                         window.location = $(self.element).data('modal-redirect-success');
                     };
                 } else {
@@ -97,6 +96,8 @@
             if ($(this).data('modal-class')) {
                 self.modal.removeClass().addClass('modal ' + $(this).data('modal-class')); //modal
             };
+            //update this.element
+            self.element = this;
 
             //call ajax
             $.get(href, function(data) {
@@ -110,8 +111,6 @@
                     }
                 };
 
-                //update this.element
-                self.element = this;
 
                 //setup content
                 self.modal.find('.modal-body').empty().html(data.content);
