@@ -9,5 +9,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:Bitnoise/btn-modal.git"
+  },
+  "dependencies": {
+    "bootstrap-modal": "git@github.com:jschr/bootstrap-modal.git"
   }
 }

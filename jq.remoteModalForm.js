@@ -29,7 +29,6 @@
     // Plugin constructor
     Plugin.prototype.init = function () {
 
-        // console.log($(this.element));
         if (!this.isModalExists()) {
             this.createModal();
             this.attachFormSubmit();
@@ -40,7 +39,12 @@
     };
 
     Plugin.prototype.createModal = function () {
-        var element = $('<div id="modalForm" class="modal hide" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div><div class="modal-body"></div><div class="modal-footer"></div></div>');
+        var element = $('<div id="modalForm" class="modal hide" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">' +
+            '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div>' +
+            '<div class="modal-body"></div>' +
+            '<div class="modal-footer"></div>' +
+            '<div class="loading-indicator"></div>' +
+            '</div>');
 
         if (this.options.showCancelBtn) {
             element.find('.modal-footer').append('<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>');
@@ -60,12 +64,16 @@
     Plugin.prototype.attachFormSubmit = function () {
         self = this;
         this.modal.find('.modal-body').on('submit', 'form', function() {
-            var form = $(this);
+            var form        = $(this);
             var querystring = form.serialize();
+            //show loading gif on submit button
+            self.modal.addClass('loading').attr('disabled', 'disabled');
             $.post(form.attr('action'), querystring, function(data) {
                 if (data.verdict == 'success') {
                     //refresh list or reload window
-                    if ($(self.element).data('modal-redirect-success')) {
+                    if (data.redirect) {
+                        window.location = data.redirect;
+                    } else if ($(self.element).data('modal-redirect-success')) {
                         window.location = $(self.element).data('modal-redirect-success');
                     };
                 } else {
@@ -79,7 +87,10 @@
 
                 //reattach links
                 self.modal.find('a[data-modal]').remoteModalForm();
-            }, 'json');
+            }, 'json').done(function (data) {
+                //hide loading gif on submit button
+                self.modal.removeClass('loading').removeAttr('disabled');
+            });
 
             return false;
         });
@@ -90,7 +101,13 @@
         this.modal = $('#modalForm');
         var self = this;
         $(this.element).click(function(ev) {
+            //clear content
+            self.modal.find('.modal-body').empty();
+            //get url
             var href  = $(this).attr('href');
+            if (href == '#') {
+                href = $(this).data('modal-url');
+            };
             var title = $(this).attr('data-modal-title');
 
             if ($(this).data('modal-class')) {
@@ -98,6 +115,27 @@
             };
             //update this.element
             self.element = this;
+
+            //set height
+            if ($(this).data('modal-height')) {
+                self.modal.css('min-height', $(this).data('modal-height'));
+            } else {
+                self.modal.css('height', 'initial');
+            }
+            //center vertically
+            var modalOverflow = $(window).height() - 10 < self.modal.height();
+            if (modalOverflow) {
+                self.modal
+                    .css('margin-top', 0)
+                    .addClass('modal-overflow');
+            } else {
+                self.modal
+                .css('margin-top', 0 - self.modal.height() / 2);
+            }
+            //show loading-indicator
+            self.modal.fadeIn(function () {
+                $('.loading-indicator').show();
+            });
 
             //call ajax
             $.get(href, function(data) {
@@ -118,10 +156,10 @@
                 //reattach
                 self.modal.find('a[data-modal]').remoteModalForm();
 
-                self.modal.removeData('modal').modal({
-                    show:true,
-                    backdrop: ($('.modal-backdrop').length) ? false : true
-                })
+                self.modal.modal();
+
+                $('.loading-indicator').hide();
+
             }, 'json');
 
             return false;
